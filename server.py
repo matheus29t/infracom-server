@@ -19,9 +19,13 @@ while True:
         if message != "":
             #Extrai o nome do arquivo que vem após o GET da mensagem
             filename = message.split()[1]
-            #Abre o arquivo, ignorando a '/' que vem antes do nome do arquivo
-            f = open(filename[1:], 'r')
-            outputdata = f.read()
+            if filename[1:] == '':
+                f = open("index.html", 'r')
+                outputdata = f.read()
+            else:
+                #Abre o arquivo, ignorando a '/' que vem antes do nome do arquivo
+                f = open(filename[1:], 'r')
+                outputdata = f.read()
 
             print("File found.")
             #Informa que o arquivo foi encontrado
