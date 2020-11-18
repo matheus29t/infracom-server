@@ -1,2 +1,2 @@
 # infracom-server
-Projeto da disciplina de INFACOM
+Projeto da disciplina de INFRACOM
