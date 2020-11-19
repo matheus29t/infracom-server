@@ -1,67 +1,73 @@
 from socket import *
 import sys
 
+#===== PARTE I =====#
 #Preparação do socket
-serverSocket = socket(AF_INET, SOCK_STREAM)
-serverPort = 12345 #Número da porta
-serverSocket.bind(('',serverPort)) #Ligando porta ao socket
-serverSocket.listen() #Espera por resposta
+SOCKET = socket(AF_INET, SOCK_STREAM) #Cria socket com suporte para IPV4 e TCP
+PORT = 12345 #Número da porta
+SOCKET.bind(('',PORT)) #Ligando porta ao socket
+SOCKET.listen() #Espera por resposta
 print("O servidor MONSTRUOSO está pronto")
 
 while True:
-    connectionSocket, addr = serverSocket.accept() #Aceita requests
-    print("Requisição aceita de (endereço, porta): %s" % (addr,))
+    #===== PARTE II =====#
+    CONNECTION, ADDRESS = SOCKET.accept() #Aceita requests
+    print("Requisição aceita de (endereço, porta): %s" % (ADDRESS,))
 
     try:
         #Rebe mensagem e decodifica
-        message = connectionSocket.recv(2048).decode()
+        MESSAGE = CONNECTION.recv(2048).decode()
         #Verifica se a mensagem está vazia
-        if message != "":
-            #Extrai o nome do arquivo que vem após o GET da mensagem
-            filename = message.split()[1]
-            if filename[1:] == '':
-                f = open("index.html", 'r')
-                outputdata = f.read()
-            else:
-                #Abre o arquivo, ignorando a '/' que vem antes do nome do arquivo
-                f = open(filename[1:], 'r')
-                outputdata = f.read()
+        if MESSAGE != "":
 
-            print("File found.")
+            #===== PARTE III =====#
+            #Extrai o nome do arquivo que vem após o GET da mensagem
+            FILENAME = MESSAGE.split()[1]
+            #===== PARTE IV =====#
+            if FILENAME[1:] == '': #Identifica se nenhum arquivo foi requisitado e envia o arquivo de index
+                #Abre o arquivo index.html
+                FILE = open("index.html", 'r')
+                OUTPUT = FILE.read() #Transforma arquivo em string
+            else:
+                #Abre o arquivo requisitado, ignorando a '/' que vem antes do nome do arquivo
+                FILE = open(FILENAME[1:], 'r')
+                OUTPUT = FILE.read() #Transforma arquivo em string
+
+            print("Arquivo encontrado.")
+
+            #print(OUTPUT)
+
             #Informa que o arquivo foi encontrado
-            headerLine = "HTTP/1.1 200 OK\r\n"
-            connectionSocket.send(headerLine.encode())
-            connectionSocket.send("\r\n".encode())
+            #===== PARTE V & VI =====#
+            HEADER = "HTTP/1.1 200 OK\r\n"
+            CONNECTION.send(HEADER.encode() + "\r\n".encode())
 
             #Envia o arquivo ao cliente
-            for i in range(0, len(outputdata)):
-                connectionSocket.send(outputdata[i].encode())
-            connectionSocket.send("\r\n".encode())
-
+            CONNECTION.send(OUTPUT.encode() + "\r\n".encode())
+            
             #Encerra a conexão
             print("Arquivo enviado")
-            connectionSocket.close()
+            CONNECTION.close()
 
+    #Caso o navegador requisite um arquivo que não esteja presente no servidor, ele deverá retornar uma mensagem de erro “404 Not Found”.
     except IOError:
         print("404 - Arquivo não encontrado.")
 
         #Retorna a mensagem de erro ao cliente
-        errHeader = "HTTP/1.1 404 Not Found\r\n"
-        connectionSocket.send(errHeader.encode())
-        connectionSocket.send("\r\n".encode())
+        HEADER = "HTTP/1.1 404 Not Found\r\n"
+        CONNECTION.send(HEADER.encode() + "\r\n".encode())
 
-        #Abre a tela de erro no navegador
-        ferr = open("404.html", 'r')
-        outputerr = ferr.read()
+        #Abre o arquivo de erro
+        FILE = open("404.html", 'r')
+        OUTPUT = FILE.read() #Transforma arquivo em string
 
-        for i in range(0, len(outputerr)):
-            connectionSocket.send(outputerr[i].encode())
-        connectionSocket.send("\r\n".encode())
+        #Envia o arquivo de erro
+        CONNECTION.send(OUTPUT.encode() + "\r\n".encode())
 
-        # Terminates the connection
-        print("Error message sent.")
-        connectionSocket.close()
+        #Encerra a conexão
+        print("Mensagem de erro enviada")
+        CONNECTION.close()
 
-    #
-    #serverSocket.close()
+    #Linhas comentadas para manter o servidor ativo
+    #SOCKET.close()
     #sys.exit()
