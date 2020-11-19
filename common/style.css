@@ -1,9 +1,3 @@
-@font-face {
-  font-family: 'Ghost Reverie';
-  src: url('http://www.fontsaddict.com/fontface/ghost-reverie.ttf');
-}
-		
-
 body{
     background-color: rgb(139, 10, 10);
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -75,8 +69,3 @@ img{
     color: blue;
     text-decoration: none;
   } 
-
-@font-face {
-    font-family: 'Ghost Reverie';
-    src: url('../GhostReverie.tff');
-}
