@@ -68,6 +68,6 @@ while True:
         print("Mensagem de erro enviada")
         CONNECTION.close()
 
-    #Linhas comentadas para manter o servidor ativo
+    #Linhas comentadas para aceitar mais de uma requisição
     #SOCKET.close()
     #sys.exit()
